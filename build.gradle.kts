@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.incremental.deleteRecursivelyOrThrow
 plugins {
     idea
     kotlin("jvm") version Dependency.Kotlin.Version
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 repositories {
@@ -14,8 +15,13 @@ repositories {
 dependencies {
     compileOnly(kotlin("stdlib"))
     compileOnly("io.papermc.paper:paper-api:${Dependency.Paper.Version}-R0.1-SNAPSHOT")
+
     Dependency.Libraries.Lib.forEach { compileOnly(it) }
+    Dependency.Libraries.LibImpl.forEach { implementation(it) }
 }
+
+val shade = configurations.create("shade")
+shade.extendsFrom(configurations.implementation.get())
 
 tasks {
     withType<KotlinCompile> {
@@ -41,41 +47,39 @@ tasks {
         pluginYml.writeText("""
             |name: ${rootProject.pluginName}
             |version: ${rootProject.properties["version"]}
-            |main: ${rootProject.properties["group"]}.${codeName.joinToString("")}.plugin.${codeName.joinToString { it.capitalize() }}PluginMain
+            |main: ${rootProject.properties["group"]}.${codeName.joinToString("")}.Main
             |api-version: ${Dependency.Paper.API}
             |libraries: 
             ${Dependency.Libraries.LibCore.joinToString("\n") { "| - $it" }}
         """.trimMargin())
     }
-    fun registerJar(
-        classifier: String,
-        source: Any,
-        destination: Any?
-    ) = register<Copy>("${classifier}Jar") {
-        dependsOn(rootProject.tasks.findByName("generatePluginYml"))
 
-        if (destination == null) {
-            val prefix = rootProject.name
-            val plugins = rootProject.file(".server/plugins")
-            val update = File(plugins, "update")
-            val regex = Regex("($prefix).*(.jar)")
+    register<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("paperJar") {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-            from(source)
-            into(if (plugins.listFiles { _, it -> it.matches(regex) }?.isNotEmpty() == true) update else plugins)
+        archiveBaseName.set(project.name)
+        archiveClassifier.set("")
+        archiveVersion.set("")
 
-            doLast {
-                update.mkdirs()
-                File(update, "RELOAD").delete()
+        from(
+            shade.map {
+                if (it.isDirectory)
+                    it
+                else
+                    zipTree(it)
+            }
+        )
+
+        from(sourceSets["main"].output)
+
+        doLast {
+            copy {
+                from(archiveFile)
+                val plugins = File(rootDir, ".server/plugins/")
+                into(plugins)
             }
         }
-        else {
-            from(source)
-            into(destination)
-        }
     }
-
-    registerJar("paper", jar, null)
-    registerJar("output", jar, rootProject.file("out"))
 }
 
 idea {
