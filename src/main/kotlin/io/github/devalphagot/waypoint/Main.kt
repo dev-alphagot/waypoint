@@ -3,6 +3,7 @@ package io.github.devalphagot.waypoint
 import io.github.devalphagot.waypoint.data.DataHandler
 import io.github.devalphagot.waypoint.types.Settings
 import io.github.devalphagot.waypoint.types.Waypoint
+import io.github.monun.tap.fake.FakeEntityServer
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import org.reflections.Reflections
@@ -24,6 +25,8 @@ class Main : JavaPlugin() {
         lateinit var waypoints: MutableMap<UUID, MutableList<Waypoint>>
 
         lateinit var settings: MutableMap<UUID, Settings>
+
+        val fakeEntityServer: MutableMap<UUID, FakeEntityServer> = mutableMapOf()
     }
 
     override fun onEnable() {

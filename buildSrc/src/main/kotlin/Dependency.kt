@@ -12,7 +12,8 @@ object Dependency {
         private const val monun = "io.github.monun"
 
         val Lib = arrayListOf(
-            "${monun}:kommand-api:2.14.0"
+            "${monun}:kommand-api:2.14.0",
+            "${monun}:tap-api:4.7.3"
         )
 
         val LibImpl = arrayListOf(
@@ -21,7 +22,8 @@ object Dependency {
         )
 
         val LibCore = arrayListOf(
-            "${monun}:kommand-core:2.14.0"
+            "${monun}:kommand-core:2.14.0",
+            "${monun}:tap-core:4.7.3"
         )
     }
 }

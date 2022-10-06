@@ -4,3 +4,4 @@ main: io.github.devalphagot.waypoint.Main
 api-version: 1.19
 libraries: 
  - io.github.monun:kommand-core:2.14.0
+ - io.github.monun:tap-core:4.7.3
