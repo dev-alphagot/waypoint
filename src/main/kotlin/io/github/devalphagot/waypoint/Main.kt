@@ -1,6 +1,7 @@
 package io.github.devalphagot.waypoint
 
 import io.github.devalphagot.waypoint.data.DataHandler
+import io.github.devalphagot.waypoint.types.IKommand
 import io.github.devalphagot.waypoint.types.Settings
 import io.github.devalphagot.waypoint.types.Waypoint
 import io.github.monun.tap.fake.FakeEntityServer
@@ -28,6 +29,8 @@ class Main : JavaPlugin() {
 
         lateinit var waypointVisualizer: WaypointVisualizer
 
+        lateinit var langBundle: ResourceBundle
+
         val fakeEntityServer: MutableMap<UUID, FakeEntityServer> = mutableMapOf()
     }
 
@@ -35,7 +38,9 @@ class Main : JavaPlugin() {
         instance = this
         DataHandler.load()
 
-        val reflections = Reflections("io.github.devalphagot.waypoint.events")
+        langBundle = ResourceBundle.getBundle("lang")
+
+        var reflections = Reflections("io.github.devalphagot.waypoint.events")
 
         reflections.getSubTypesOf(
             Listener::class.java
@@ -44,6 +49,17 @@ class Main : JavaPlugin() {
 
             clazz.getDeclaredConstructor().trySetAccessible()
             server.pluginManager.registerEvents(clazz.getDeclaredConstructor().newInstance(), this)
+        }
+
+        reflections = Reflections("io.github.devalphagot.waypoint.command")
+
+        reflections.getSubTypesOf(
+            IKommand::class.java
+        )?.forEach { clazz ->
+            logger.info(clazz.name)
+
+            clazz.getDeclaredConstructor().trySetAccessible()
+            clazz.getDeclaredConstructor().newInstance().kommand()
         }
 
         waypointVisualizer = WaypointVisualizer()

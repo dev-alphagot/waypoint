@@ -2,6 +2,7 @@ package io.github.devalphagot.waypoint.events
 
 import io.github.devalphagot.waypoint.Main.Companion.waypoints
 import io.github.devalphagot.waypoint.settings
+import io.github.devalphagot.waypoint.translated
 import io.github.devalphagot.waypoint.types.Waypoint
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -23,12 +24,12 @@ class Death: Listener {
                 Waypoint(
                     location = e.player.location,
                     type = Waypoint.Type.DEATH,
-                    name = SimpleDateFormat("YYYY년 M월 d일 a h시 m분 s초에 사망한 지점").format(it),
+                    name = SimpleDateFormat("name.waypoint.death".translated).format(it),
                     time = it
                 )
             )
 
-            e.player.sendMessage("사망 시각, ${SimpleDateFormat("YYYY년 M월 d일 a h시 m분 s초").format(it)}입니다.")
+            e.player.sendMessage("message.death.info".translated)
         }
     }
 }
