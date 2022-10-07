@@ -6,22 +6,25 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.scheduler.BukkitTask
+import java.util.UUID
 
 class JoinQuit: Listener {
+
     @EventHandler
     fun onJoin(e: PlayerJoinEvent){
         Main.fakeEntityServer[e.player.uniqueId] = FakeEntityServer.create(Main.instance)
-        Main.fakeEntityServer[e.player.uniqueId]!!.let {
-            it.addPlayer(e.player)
-            Main.instance.server.scheduler.runTaskTimer(Main.instance, it::update, 0L, 1L)
-        }
+        Main.fakeEntityServer[e.player.uniqueId]!!.addPlayer(e.player)
     }
 
     @EventHandler
     fun onQuit(e: PlayerQuitEvent){
         if(!Main.fakeEntityServer.containsKey(e.player.uniqueId)) return
 
+        Main.fakeEntityServer[e.player.uniqueId]!!.clear()
         Main.fakeEntityServer[e.player.uniqueId]!!.shutdown()
         Main.fakeEntityServer.remove(e.player.uniqueId)
+
+        Main.waypointVisualizer.markers.remove(e.player.uniqueId)
     }
 }

@@ -26,6 +26,8 @@ class Main : JavaPlugin() {
 
         lateinit var settings: MutableMap<UUID, Settings>
 
+        lateinit var waypointVisualizer: WaypointVisualizer
+
         val fakeEntityServer: MutableMap<UUID, FakeEntityServer> = mutableMapOf()
     }
 
@@ -43,6 +45,8 @@ class Main : JavaPlugin() {
             clazz.getDeclaredConstructor().trySetAccessible()
             server.pluginManager.registerEvents(clazz.getDeclaredConstructor().newInstance(), this)
         }
+
+        waypointVisualizer = WaypointVisualizer()
     }
 
     override fun onDisable() {
