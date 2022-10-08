@@ -9,7 +9,9 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import org.reflections.Reflections
 import java.io.File
+import java.net.URLClassLoader
 import java.util.*
+
 
 /**
  * @author BaeHyeonWoo w/ xnoeyhx
@@ -17,7 +19,7 @@ import java.util.*
 
  */
 
-class Main : JavaPlugin() {
+class Main: JavaPlugin() {
 
     companion object {
         lateinit var instance: Main

@@ -1,6 +1,7 @@
 package io.github.devalphagot.waypoint.events
 
 import io.github.devalphagot.waypoint.Main.Companion.waypoints
+import io.github.devalphagot.waypoint.formatted
 import io.github.devalphagot.waypoint.settings
 import io.github.devalphagot.waypoint.translated
 import io.github.devalphagot.waypoint.types.Waypoint
@@ -24,12 +25,12 @@ class Death: Listener {
                 Waypoint(
                     location = e.player.location,
                     type = Waypoint.Type.DEATH,
-                    name = SimpleDateFormat("name.waypoint.death".translated).format(it),
+                    name = SimpleDateFormat("name.waypoint.death".translated).format(it.formatted),
                     time = it
                 )
             )
 
-            e.player.sendMessage("message.death.info".translated)
+            e.player.sendMessage("message.death.info".translated.format(it.formatted))
         }
     }
 }
