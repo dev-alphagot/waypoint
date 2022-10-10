@@ -7,28 +7,29 @@ import io.github.devalphagot.waypoint.toComponent
 import io.github.devalphagot.waypoint.translated
 import io.github.devalphagot.waypoint.types.IKommand
 import io.github.monun.kommand.Kommand.Companion.register
+import io.github.monun.kommand.node.LiteralNode
 
 class View: IKommand {
-    override fun kommand() {
-        register(Main.instance, "waypoint"){
-            then("view"){
-                executes {
-                    if(!waypoints.containsKey(player.uniqueId)) {
-                        player.sendMessage("message.view.no-waypoints".translated.toComponent())
-                        return@executes
-                    }
+    override fun kommand(r: LiteralNode) {
+        r.then("view"){
+            executes {
+                if(!waypoints.containsKey(player.uniqueId)) {
+                    player.sendMessage("message.view.no-waypoints".translated.toComponent())
+                    return@executes
+                }
 
-                    player.sendMessage("message.view.waypoint-exists".translated.format(waypoints[player.uniqueId]!!.size).toComponent())
-                    waypoints[player.uniqueId]!!.forEachIndexed { id, it ->
-                        player.sendMessage("message.view.waypoint-info".translated.format(
-                            id,
-                            it.name,
-                            it.time.formatted,
+                player.sendMessage("message.view.waypoint-exists".translated.format(waypoints[player.uniqueId]!!.size).toComponent())
+                waypoints[player.uniqueId]!!.forEachIndexed { id, it ->
+                    player.sendMessage("message.view.waypoint-info".translated.format(
+                        id + 1,
+                        it.name,
+                        it.time.formatted,
+                        "global.location".translated.format(
                             it.location.x,
                             it.location.y,
                             it.location.z
-                        ))
-                    }
+                        )
+                    ))
                 }
             }
         }

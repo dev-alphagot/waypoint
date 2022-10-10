@@ -4,6 +4,7 @@ import io.github.devalphagot.waypoint.data.DataHandler
 import io.github.devalphagot.waypoint.types.IKommand
 import io.github.devalphagot.waypoint.types.Settings
 import io.github.devalphagot.waypoint.types.Waypoint
+import io.github.monun.kommand.Kommand.Companion.register
 import io.github.monun.tap.fake.FakeEntityServer
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
@@ -55,13 +56,15 @@ class Main: JavaPlugin() {
 
         reflections = Reflections("io.github.devalphagot.waypoint.command")
 
-        reflections.getSubTypesOf(
-            IKommand::class.java
-        )?.forEach { clazz ->
-            logger.info(clazz.name)
+        register(this, "waypoint"){
+            reflections.getSubTypesOf(
+                IKommand::class.java
+            )?.forEach { clazz ->
+                logger.info(clazz.name)
 
-            clazz.getDeclaredConstructor().trySetAccessible()
-            clazz.getDeclaredConstructor().newInstance().kommand()
+                clazz.getDeclaredConstructor().trySetAccessible()
+                clazz.getDeclaredConstructor().newInstance().kommand(this)
+            }
         }
 
         waypointVisualizer = WaypointVisualizer()

@@ -33,3 +33,13 @@ fun String.toComponent(vararg extra: Component): Component {
 
     return comp
 }
+
+fun String.toComponentNoPrefix(vararg extra: Component): Component {
+    var comp = Component.text(this)
+
+    extra.forEach {
+        comp = comp.append(it)
+    }
+
+    return comp
+}
