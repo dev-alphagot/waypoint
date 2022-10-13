@@ -18,7 +18,12 @@ var Player.settings: Settings
 
 val String.translated: String
     get() {
-        return Main.langBundle.getString(this).replace("&", "§")
+        return Main.langBundle.getString(this)
+            .replace("""#""".toRegex(), "&a#&r")
+            .replace("""%s""".toRegex(), "&d%s&r")
+            .replace("""%d""".toRegex(), "&b%d&r")
+            .replace("""%.2f""".toRegex(), "&c%.2f&r")
+            .replace("&", "§")
     }
 
 val Date.formatted: String
